@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore;
-using FastArchitecture.Domain.Abstractions;
+﻿using FastArchitecture.Domain.Abstractions;
 using System.Linq.Expressions;
 using FastArchitecture.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FastArchitecture.Infrastructure;
 

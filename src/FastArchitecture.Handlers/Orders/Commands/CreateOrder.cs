@@ -30,7 +30,6 @@ public static class CreateOrder
         public override async Task ExecuteAsync(Command command, CancellationToken ct)
         {
             var order = Domain.Order.Create(command.Name);
-
             await DbContext.Orders.AddAsync(order, ct);
             await DbContext.SaveChangesAsync(ct);
         }

@@ -2,9 +2,17 @@ using FastArchitecture.Handlers.Abstractions;
 using FastEndpoints.Swagger;
 using FastArchitecture.Infrastructure.Persistence;
 using FastEndpoints;
-using Microsoft.Azure.Cosmos;
-using Microsoft.EntityFrameworkCore;
+
+//using Microsoft.Azure.Cosmos;
+//using Microsoft.EntityFrameworkCore;
 using Serilog;
+
+/*
+ * TODO: share registration between API and Functions.
+ * TODO: example of API Versioning via headers
+ * TODO: exmaple of Authorization
+ * TODO: example of IActionFilter
+ */
 
 var builder = WebApplication.CreateBuilder(args);
 

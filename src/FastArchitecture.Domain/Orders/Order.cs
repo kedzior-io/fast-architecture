@@ -8,16 +8,23 @@ public class Order : Entity, IAggregateRoot
     public string Name { get; private set; }
     public string Status { get; private set; }
 
-    public Order()
+    private Order()
     {
         // EF
     }
 
     public Order(string name, string status)
     {
-        Guard.Against.NullOrWhiteSpace(name, nameof(name));
-        Guard.Against.NullOrWhiteSpace(status, nameof(status));
+        Guard.Against.NullOrWhiteSpace(name);
+        Guard.Against.NullOrWhiteSpace(status);
+
         Name = name;
+        Status = status;
+    }
+
+    public void UpdateStatus(string status)
+    {
+        Guard.Against.NullOrWhiteSpace(status, nameof(status));
         Status = status;
     }
 

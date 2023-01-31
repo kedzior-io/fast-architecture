@@ -14,9 +14,7 @@ public class GetOrdersEndpoint : EndpointWithoutRequest
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        var order = await new GetOrders.Query()
-            .ExecuteAsync(ct: ct);
-
+        var order = await new GetOrders.Query().ExecuteAsync(ct: ct);
         await SendAsync(order, cancellation: ct);
     }
 }
