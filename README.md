@@ -135,50 +135,59 @@ public static class CreateOrder
 }
 ```
 
-Want to fire up a command from `Azure Function`? Here it is:
+Want to fire up a command from `Azure Function`? 
 
 ```csharp
-public class CreateOrderFunction
+public class ConfirmAllOrdersFunction : FunctionBase<ConfirmAllOrdersFunction>
 {
-    private readonly IValidator<CreateOrder.Command> _validator;
 
-    public CreateOrderFunction(IValidator<CreateOrder.Command> validator)
+    public ConfirmAllOrdersFunction(ILogger logger) : base(logger)
     {
-        _validator = validator;
     }
 
-    [Function(nameof(CreateOrderFunction))]
-    public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequestData req, FunctionContext executionContext)
+    [Function(nameof(ConfirmAllOrdersFunction))]
+    public async Task Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequestData req)
     {
-        var command = new CreateOrder.Command()
-        {
-            Name = "#0001"
-        };
+        var command = new ConfirmAllOrders.Command();
 
-        // TODO: Fire validation automatically.
-
-        var validationResult = await _validator.ValidateAsync(command);
-
-        await command.ExecuteAsync();
-
-        var response = req.CreateResponse(HttpStatusCode.OK);
-        return response;
+        await ExecuteAsync<ConfirmAllOrders.Command>(command, req.FunctionContext);
     }
 }
 ```
+Need to validate automatically and deserialize (useful when using [ServiceBusTrigger](https://learn.microsoft.com/en-us/azure/azure-functions/functions-bindings-service-bus-trigger?tabs=isolated-process%2Cextensionv5&pivots=programming-language-csharp#example))?  
+
+```csharp
+public class OrderPaidFunction : FunctionBase<OrderPaidFunction>
+{
+
+    public OrderPaidFunction(ILogger logger, IValidator<CreateOrder.Command> validator) : base(logger, validator)
+    {
+    }
+    
+    [Function(nameof(OrderPaidFunction))]
+    public async Task Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequestData req)
+    {
+        var json = "{\r\n  \"name\": \"AAA\"\r\n}";
+
+        await ExecuteAsync<CreateOrder.Command>(json, req.FunctionContext);
+    }
+}
+```
+
 
 ## TODO
 
 There are few things to work out here and mainly:
 
-- fire up validation on Azure Function execution
+- ~~fire up validation on Azure Function execution~~
 - avoid creating `webAppBuilder` in Azure Function startup
-- adding integration test example
 - removing `DumbEndpoint`- just see the comments in the code
+- add an example of integration test
+- add an example of authorization endpoint
+- add an example of usage of [Filters in ASP.NET Core](https://learn.microsoft.com/en-us/aspnet/core/mvc/controllers/filters?view=aspnetcore-7.0)
 
 ## Contributing
 
-Pull requests are welcome. For major changes, please open an issue first
-to discuss what you would like to change.
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 Please make sure to update tests as appropriate.
