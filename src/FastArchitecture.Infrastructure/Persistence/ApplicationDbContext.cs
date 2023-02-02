@@ -9,7 +9,7 @@ public interface IDbContext : IDisposable
 {
     public DbSet<Order> Orders { get; set; }
 
-    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default, [CallerMemberName] string callerFunction = null, [CallerFilePath] string callerFile = null);
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default, [CallerMemberName] string? callerFunction = null, [CallerFilePath] string? callerFile = null);
 }
 
 public class ApplicationDbContext : DbContext, IDbContext
@@ -26,12 +26,9 @@ public class ApplicationDbContext : DbContext, IDbContext
         base.OnModelCreating(modelBuilder);
     }
 
-    public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default, [CallerMemberName] string callerFunction = null, [CallerFilePath] string callerFile = null) =>
+    public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default, [CallerMemberName] string? callerFunction = null, [CallerFilePath] string? callerFile = null) =>
         await base.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-    public void Dispose()
-    {
-    }
 }
 
 internal class OrderConfiguration : IEntityTypeConfiguration<Order>

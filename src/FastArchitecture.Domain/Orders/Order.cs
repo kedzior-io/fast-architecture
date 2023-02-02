@@ -5,8 +5,8 @@ namespace FastArchitecture.Domain;
 
 public class Order : Entity, IAggregateRoot
 {
-    public string Name { get; private set; }
-    public string Status { get; private set; }
+    public string Name { get; private set; } = null!;
+    public string Status { get; private set; } = null!;
 
     private Order()
     {
@@ -27,6 +27,12 @@ public class Order : Entity, IAggregateRoot
         Guard.Against.NullOrWhiteSpace(status, nameof(status));
         Status = status;
     }
+
+    public void SetConfrimed()
+    {
+        Status = "confrimed";
+    }
+
 
     public static Order CreateDraft(string name)
     {

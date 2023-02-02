@@ -3,8 +3,7 @@ using FastArchitecture.Infrastructure.Persistence;
 
 namespace FastArchitecture.Handlers.Abstractions;
 
-public abstract class CommandHandler<TCommand, TResponse> : ICommandHandler<TCommand, TResponse>
-         where TCommand : ICommand<TResponse>
+public abstract class CommandHandler<TCommand, TResponse> : ICommandHandler<TCommand, TResponse> where TCommand : ICommand<TResponse>
 {
     protected readonly IDbContext DbContext;
 
@@ -16,8 +15,7 @@ public abstract class CommandHandler<TCommand, TResponse> : ICommandHandler<TCom
     public abstract Task<TResponse> ExecuteAsync(TCommand command, CancellationToken ct = default);
 }
 
-public abstract class CommandHandler<TCommand> : ICommandHandler<TCommand>
-         where TCommand : ICommand
+public abstract class CommandHandler<TCommand> : ICommandHandler<TCommand> where TCommand : ICommand
 {
     protected readonly IDbContext DbContext;
 

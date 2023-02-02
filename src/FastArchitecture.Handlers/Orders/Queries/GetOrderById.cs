@@ -22,7 +22,7 @@ public static class GetOrderByName
             var order = await DbContext
                    .Orders
                    .Where(x => x.Name == query.Name)
-                   .SingleOrDefaultAsync(ct);
+                   .SingleAsync(ct);
 
             return new GetOrderByNameResponse(order);
         }

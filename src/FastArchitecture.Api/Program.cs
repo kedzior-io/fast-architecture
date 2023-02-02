@@ -1,25 +1,15 @@
-using FastArchitecture.Handlers.Abstractions;
 using FastEndpoints.Swagger;
-using FastArchitecture.Infrastructure.Persistence;
 using FastEndpoints;
-
-//using Microsoft.Azure.Cosmos;
-//using Microsoft.EntityFrameworkCore;
 using Serilog;
+using FastArchitecture.Infrastructure.Extensions;
+
 
 /*
- * TODO: share registration between API and Functions.
- * TODO: example of API Versioning via headers
  * TODO: exmaple of Authorization
  * TODO: example of IActionFilter
  */
 
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddFastEndpoints();
-builder.Services.AddResponseCaching();
-builder.Services.AddSwaggerDoc();
-builder.Services.AddTransient<IHandlerContext, HandlerContext>();
 
 builder.Host.UseSerilog((hostContext, services, configuration) =>
 {
@@ -27,15 +17,21 @@ builder.Host.UseSerilog((hostContext, services, configuration) =>
         .WriteTo.Console();
 });
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-{
-    options.UseCosmos("AccountEndpoint=https://localhost:8081/;AccountKey=C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==", "FastArchitecture", options =>
+builder.Services.AddResponseCaching();
+builder.Services.AddSwaggerDoc(s =>
     {
-        options.ConnectionMode(ConnectionMode.Direct);
+        s.DocumentName = "Initial Release";
+        s.Title = "FastArchitecture.Api";
+        s.Version = "v1.0";
+    })
+    .AddSwaggerDoc(maxEndpointVersion: 1, settings: s =>
+    {
+        s.DocumentName = "Release 1.0";
+        s.Title = "FastArchitecture.Api";
+        s.Version = "v1.0";
     });
-});
 
-builder.Services.AddTransient<IDbContext, ApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
+builder.Services.AddDependencies();
 
 var app = builder.Build();
 
@@ -46,6 +42,12 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.UseResponseCaching();
-app.UseFastEndpoints();
+app.UseFastEndpoints(c =>
+{
+    c.Versioning.Prefix = "v";
+    c.Versioning.PrependToRoute = true;
+});
+
+
 app.UseSwaggerGen();
 app.Run();
