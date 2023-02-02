@@ -1,49 +1,28 @@
 ﻿using FastArchitecture.Handlers.Abstractions;
+using FastArchitecture.Handlers.Orders.Queries.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace FastArchitecture.Handlers.Orders.Queries;
 
 public static class GetOrders
 {
-    public sealed class Query : IQuery<Response>
+    public sealed class Query : IQuery<GetOrdersResponse>
     {
     }
 
-    public sealed class Response
-    {
-        public IReadOnlyCollection<OrderModel> Orders { get; private set; }
-
-        public Response(IReadOnlyCollection<Domain.Order> orders)
-        {
-            Orders = orders.Select(x => new OrderModel(x)).ToList();
-        }
-    }
-
-    public sealed class OrderModel
-    {
-        public Guid Id { get; private set; }
-        public string Name { get; private set; }
-
-        public OrderModel(Domain.Order order)
-        {
-            Id = order.Id;
-            Name = order.Name;
-        }
-    }
-
-    public sealed class Handler : QueryHandler<Query, Response>
+    public sealed class Handler : QueryHandler<Query, GetOrdersResponse>
     {
         public Handler(IHandlerContext context) : base(context)
         {
         }
 
-        public override async Task<Response> ExecuteAsync(Query query, CancellationToken ct)
+        public override async Task<GetOrdersResponse> ExecuteAsync(Query query, CancellationToken ct)
         {
             var orders = await DbContext
                 .Orders
                 .ToListAsync(ct);
 
-            return new Response(orders);
+            return new GetOrdersResponse(orders);
         }
     }
 }

@@ -3,13 +3,13 @@ using FastArchitecture.Handlers.Orders.Queries;
 
 namespace FastArchitecture.Api.Endpoints.Orders;
 
-public class GetOrdersEndpoint : EndpointWithoutRequest
+public class GetOrdersV1Endpoint : EndpointWithoutRequest
 {
     public override void Configure()
     {
         Get("orders.list");
         AllowAnonymous();
-        ResponseCache(60);
+        Version(1);
     }
 
     public override async Task HandleAsync(CancellationToken ct)

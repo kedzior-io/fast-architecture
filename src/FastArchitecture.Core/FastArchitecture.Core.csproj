@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -7,15 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-	<PackageReference Include="FastEndpoints" Version="5.6.0" />
-	<PackageReference Include="Microsoft.Azure.Cosmos" Version="3.31.2" />
-	<PackageReference Include="Microsoft.EntityFrameworkCore.Cosmos" Version="7.0.1" />
+    <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.31.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FastArchitecture.Domain\FastArchitecture.Domain.csproj" />
+    <ProjectReference Include="..\FastArchitecture.Handlers\FastArchitecture.Handlers.csproj" />
   </ItemGroup>
 
 </Project>

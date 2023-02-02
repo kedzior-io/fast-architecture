@@ -37,13 +37,17 @@ public class CreateOrderTests
 
         var expectedName = NewOrderName;
         var expectedStatus = NewOrderStatus;
+        var expectedCount = 3;
 
         await GetHandler(dc).ExecuteAsync(command, default);
+
         var result = dc.Orders.SingleOrDefault(o => o.Name == NewOrderName);
+        var actualCount = dc.Orders.Count();
 
         Assert.NotNull(result);
         Assert.Equal(expectedName, result.Name);
         Assert.Equal(expectedStatus, result.Status);
+        Assert.Equal(expectedCount, expectedCount);
     }
 
     [Fact]

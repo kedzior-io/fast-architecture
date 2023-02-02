@@ -1,5 +1,7 @@
 ﻿using FastArchitecture.Functions.Configuration;
 using FastArchitecture.Functions.Logging;
+using FastEndpoints;
+using FluentValidation;
 using Microsoft.Azure.Functions.Worker;
 using Serilog;
 using SerilogTimings.Extensions;
@@ -12,6 +14,8 @@ public abstract class FunctionBase<T> where T : class
     protected FunctionLog Log { get; }
 
     private ILogger _logger;
+    public readonly IValidator? _validator;
+
     private readonly string _functionName;
 
     private CancellationToken? _cancellationToken;
@@ -30,123 +34,72 @@ public abstract class FunctionBase<T> where T : class
     {
         _logger = logger;
         _functionName = typeof(T).Name;
-
         Log = new FunctionLog(logger, _functionName);
     }
 
-    protected async Task<TResult> ExecuteAsync<TMessage, TResult>(FunctionContext context, string json, Func<TMessage, Task<TResult>> func) where TMessage : class
+    protected FunctionBase(ILogger logger, IValidator validator)
+    {
+        _logger = logger;
+        _functionName = typeof(T).Name;
+        Log = new FunctionLog(logger, _functionName);
+        _validator = validator;
+    }
+    protected async Task ExecuteAsync<TCommand>(string deserializedCommand, FunctionContext context) where TCommand : ICommand
     {
         try
         {
-            using (Init(context, json, out TMessage message))
+
+            using (Init(context, deserializedCommand, out TCommand command))
             {
-                return await func.Invoke(message);
+                await ThrowInvalid(command);
+
+                await command.ExecuteAsync(CancellationToken);
             }
         }
         catch (Exception ex)
         {
-            _logger.Error(ex, "<{FunctionName:l}> Execution failed for input {@Json}", _functionName, json);
+            _logger.Error(ex, "<{functionName:l}> Execution failed for command {@deserializedCommand}", _functionName, deserializedCommand);
             throw;
         }
     }
 
-    protected async Task ExecuteAsync<TMessage>(FunctionContext context, string json, Func<TMessage, Task> func) where TMessage : class
-    {
-        try
-        {
-            using (Init(context, json, out TMessage message))
-            {
-                await func.Invoke(message);
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.Error(ex, "<{FunctionName:l}> Execution failed for input {Json}", _functionName, json);
-            throw;
-        }
-    }
-
-    protected async Task ExecuteAsync(FunctionContext context, Func<Task> func)
+    protected async Task ExecuteAsync<TCommand>(ICommand command, FunctionContext context) where TCommand: ICommand
     {
         try
         {
             using (Init(context))
-            {
-                await func.Invoke();
+            {         
+                var commandInstance = (TCommand)command;
+
+                await ThrowInvalid(command);
+
+                await commandInstance.ExecuteAsync(CancellationToken);
             }
         }
         catch (Exception ex)
         {
-            _logger.Error(ex, "Error");
+            _logger.Error(ex, "<{functionName:l}> Execution failed for command {@command}", _functionName, command);
             throw;
         }
     }
 
-    protected async Task<TResponse> ExecuteAsync<TResponse>(FunctionContext context, Func<Task<TResponse>> func)
+    private async Task ThrowInvalid<TCommand>(TCommand command) where TCommand : ICommand
     {
-        try
+        if (_validator is null)
         {
-            using (Init(context))
-            {
-                return await func.Invoke();
-            }
+            return;
         }
-        catch (Exception ex)
+
+        var validationContext = new ValidationContext<ICommand>(command);
+        var validationResult = await _validator.ValidateAsync(validationContext);
+
+        if (!validationResult.IsValid)
         {
-            _logger.Error(ex, "Error");
-            throw;
+            throw new ValidationException($"<{_functionName}> Validation failed for command {@command}", validationResult.Errors);
         }
     }
 
-    protected TResult Execute<TMessage, TResult>(FunctionContext context, string json, Func<TMessage, TResult> func) where TMessage : class
-    {
-        try
-        {
-            using (Init(context, json, out TMessage message))
-            {
-                return func.Invoke(message);
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.Error(ex, "<{FunctionName:l}> Execution failed for input {Json}", _functionName, json);
-            throw;
-        }
-    }
-
-    protected void Execute<TMessage>(FunctionContext context, string json, Action<TMessage> func) where TMessage : class
-    {
-        try
-        {
-            using (Init(context, json, out TMessage message))
-            {
-                func.Invoke(message);
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.Error(ex, "<{FunctionName:l}> Execution failed for input {Json}", _functionName, json);
-            throw;
-        }
-    }
-
-    protected void Execute(FunctionContext context, Action func)
-    {
-        try
-        {
-            using (Init(context))
-            {
-                func.Invoke();
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.Error(ex, "Error");
-            throw;
-        }
-    }
-
-    private IDisposable Init<TMessage>(FunctionContext context, string json, out TMessage message) where TMessage : class
+    private IDisposable Init<TMessage>(FunctionContext context, string json, out TMessage message)
     {
         _logger = Log.SetInvocationId(context.InvocationId);
         message = JsonSerializer.Deserialize<TMessage>(json, JsonOptions.Defaults)!;
