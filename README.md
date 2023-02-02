@@ -11,7 +11,7 @@ The motive behind it is to create a solution that is
 ## Project structure
 
 - Api - thin API using [FastEndpoints](https://fast-endpoints.com) and [FastEndpoints Commands](https://fast-endpoints.com/docs/command-bus#_1-define-a-command)
-- Functions - thin Azure Functions using [FastEndpoints Commands](https://fast-endpoints.com/docs/command-bus#_1-define-a-command)
+- Functions - thin Azure Functions (isolated process) using [FastEndpoints Commands](https://fast-endpoints.com/docs/command-bus#_1-define-a-command)
 - Handlers - class library where all command handlers live
 - Domain - where all domain entities and service lives
 - Infrastructure - persistence setup, sending emails etc
