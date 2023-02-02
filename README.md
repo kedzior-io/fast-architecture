@@ -15,6 +15,7 @@ The motive behind it is to create a solution that is
 - Handlers - class library where all command handlers live
 - Domain - where all domain entities and service lives
 - Infrastructure - persistence setup, sending emails etc
+- Core - common stuff, i.e shared services registration used in API and Functions
 - UnitTests - project containing unit tests for domain entities and handlers
 - IntegrationTests - still TODO
 
