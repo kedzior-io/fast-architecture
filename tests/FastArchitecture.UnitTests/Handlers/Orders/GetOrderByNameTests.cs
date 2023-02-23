@@ -37,6 +37,6 @@ public class GetOrderByNameTests
 
         var response = await GetHandler(dc).ExecuteAsync(query, default);
 
-        Assert.Equal(expected, response.Order.Name);
+        Assert.Equal(expected, response.Payload.Order.Name);
     }
 }
