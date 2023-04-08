@@ -24,7 +24,7 @@ public class Order : Entity, IAggregateRoot
 
     public void UpdateStatus(string status)
     {
-        Guard.Against.NullOrWhiteSpace(status, nameof(status));
+        Guard.Against.NullOrWhiteSpace(status);
         Status = status;
     }
 
@@ -32,7 +32,6 @@ public class Order : Entity, IAggregateRoot
     {
         Status = "confrimed";
     }
-
 
     public static Order CreateDraft(string name)
     {

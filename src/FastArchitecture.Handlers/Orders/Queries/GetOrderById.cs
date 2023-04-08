@@ -6,25 +6,25 @@ namespace FastArchitecture.Handlers.Orders.Queries;
 
 public static class GetOrderByName
 {
-    public sealed class Query : IQuery<GetOrderByNameResponse>
+    public sealed class Query : IQuery<OrderModel>
     {
         public string Name { get; set; } = "";
     }
 
-    public sealed class Handler : QueryHandler<Query, GetOrderByNameResponse>
+    public sealed class Handler : QueryHandler<Query, OrderModel>
     {
         public Handler(IHandlerContext context) : base(context)
         {
         }
 
-        public override async Task<GetOrderByNameResponse> ExecuteAsync(Query query, CancellationToken ct)
+        public override async Task<OrderModel> ExecuteAsync(Query query, CancellationToken ct)
         {
             var order = await DbContext
                    .Orders
                    .Where(x => x.Name == query.Name)
                    .SingleAsync(ct);
 
-            return new GetOrderByNameResponse(order);
+            return new OrderModel(order);
         }
     }
 }

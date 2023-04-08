@@ -27,6 +27,7 @@ public class CreateDraftOrderTests
     public async Task Create_DraftOrder_ReturnEmpty()
     {
         var dc = InMemoryDbContextFactory.Create();
+
         SetTestData(dc);
 
         var command = new CreateDraftOrder.Command()
@@ -38,6 +39,7 @@ public class CreateDraftOrderTests
         var expectedStatus = NewOrderStatus;
 
         await GetHandler(dc).ExecuteAsync(command, default);
+
         var result = dc.Orders.SingleOrDefault(o => o.Name == NewOrderName);
 
         Assert.NotNull(result);

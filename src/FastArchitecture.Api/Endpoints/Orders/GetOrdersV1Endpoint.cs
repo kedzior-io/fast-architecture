@@ -7,7 +7,7 @@ public class GetOrdersV1Endpoint : EndpointWithoutRequest
 {
     public override void Configure()
     {
-        Get("orders.list");
+        Get("orders.list"); // /v1/orders.list
         AllowAnonymous();
         Version(1);
     }

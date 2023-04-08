@@ -2,10 +2,10 @@
 
 public sealed class GetOrdersResponse
 {
-    public IReadOnlyCollection<OrderModel> Orders { get; private set; }
+    public IReadOnlyCollection<OrderListModel> Orders { get; private set; }
 
     public GetOrdersResponse(IReadOnlyCollection<Domain.Order> orders)
     {
-        Orders = orders.Select(OrderModel.Create).ToList();
+        Orders = orders.Select(OrderListModel.Create).ToList();
     }
 }

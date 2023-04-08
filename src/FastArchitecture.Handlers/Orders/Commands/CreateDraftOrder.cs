@@ -1,4 +1,5 @@
 ﻿using FastArchitecture.Handlers.Abstractions;
+using FastArchitecture.Handlers.Orders.Queries.Models;
 using FastEndpoints;
 using FluentValidation;
 using Serilog;
@@ -7,21 +8,9 @@ namespace FastArchitecture.Handlers.Orders.Commands;
 
 public static class CreateDraftOrder
 {
-    public sealed class Command : ICommand
+    public sealed class Command : ICommand<OrderModel>
     {
         public string Name { get; set; } = "";
-    }
-
-    public sealed class OrderModel
-    {
-        public Guid Id { get; private set; }
-        public string Name { get; private set; }
-
-        public OrderModel(Domain.Order order)
-        {
-            Id = order.Id;
-            Name = order.Name;
-        }
     }
 
     public sealed class MyValidator : Validator<Command>
@@ -43,7 +32,7 @@ public static class CreateDraftOrder
             _logger = context.Logger;
         }
 
-        public override async Task ExecuteAsync(Command command, CancellationToken ct)
+        public override async Task<OrderModel> ExecuteAsync(Command command, CancellationToken ct)
         {
             var order = Domain.Order.CreateDraft(command.Name);
 
@@ -51,6 +40,8 @@ public static class CreateDraftOrder
             await DbContext.SaveChangesAsync(ct);
 
             _logger.Information("In need to log something here: {@order}", order);
+
+            return new OrderModel(order);
         }
     }
 }

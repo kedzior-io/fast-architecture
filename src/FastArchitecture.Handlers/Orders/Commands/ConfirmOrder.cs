@@ -12,15 +12,15 @@ public static class ConfirmAllOrders
         public string Name { get; set; } = "";
     }
 
-    //public sealed class MyValidator : Validator<Command>
-    //{
-    //    public MyValidator()
-    //    {
-    //        RuleFor(x => x.Name)
-    //            .MinimumLength(5)
-    //            .WithMessage("Order name is too short!");
-    //    }
-    //}
+    public sealed class MyValidator : Validator<Command>
+    {
+        public MyValidator()
+        {
+            RuleFor(x => x.Name)
+                .MinimumLength(5)
+                .WithMessage("Order name is too short!");
+        }
+    }
 
     public sealed class Handler : CommandHandler<Command>
     {

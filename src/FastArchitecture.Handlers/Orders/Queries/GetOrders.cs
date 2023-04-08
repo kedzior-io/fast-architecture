@@ -22,7 +22,7 @@ public static class GetOrders
                 .Orders
                 .ToListAsync(ct);
 
-            return new GetOrdersResponse(orders);
+            return Success(new GetOrdersResponse(orders));
         }
     }
 }

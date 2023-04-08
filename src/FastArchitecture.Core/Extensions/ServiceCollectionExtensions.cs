@@ -2,9 +2,7 @@
 using FastArchitecture.Infrastructure.Persistence;
 using FastEndpoints;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
 namespace FastArchitecture.Infrastructure.Extensions;
 
