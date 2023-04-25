@@ -2,11 +2,17 @@
 
 This is a solution template for creating ASP.NET Core Web API that uses [FastEndpoints](https://fast-endpoints.com) and its command bus to get close to CQRS pattern with DDD (Domain Driven Design) design approach.
 
-The motive behind it is to create a solution that is
+## Motives
 
-- easy to start with
-- it is consistent
-- has simple structure
+- easy to start with any new project
+- force consistency
+- keep simple structure
+
+## Goals
+
+- keep API layer as thin as possible
+- keep everything within handlers
+- have unit testable handlers
 
 ## Project structure
 
@@ -156,6 +162,56 @@ public class OrderPaidFunction : FunctionBase<OrderPaidFunction>
         var json = "{\r\n  \"name\": \"AAA\"\r\n}";
 
         await ExecuteAsync<CreateOrder.Command>(json, req.FunctionContext);
+    }
+}
+```
+
+Unit test the handler!
+
+```csharp
+public class CreateDraftOrderTests
+{
+    private static readonly string NewOrderName = "#0003";
+    private static readonly string NewOrderStatus = "draft";
+
+    private static CreateDraftOrder.Handler GetHandler(ApplicationDbContext dbContext)
+    {
+        return new CreateDraftOrder.Handler(HandlerContextFactory.GetHandlerContext(dbContext));
+    }
+
+    private static void SetTestData(ApplicationDbContext dc)
+    {
+        var orders = new List<Order> {
+            Order.CreateDraft("#0001"),
+            Order.CreateDraft("#0002"),
+        };
+
+        dc.Orders.AddRange(orders);
+        dc.SaveChanges();
+    }
+
+    [Fact]
+    public async Task Create_DraftOrder_ReturnEmpty()
+    {
+        var dc = InMemoryDbContextFactory.Create();
+
+        SetTestData(dc);
+
+        var command = new CreateDraftOrder.Command()
+        {
+            Name = NewOrderName
+        };
+
+        var expectedName = NewOrderName;
+        var expectedStatus = NewOrderStatus;
+
+        await GetHandler(dc).ExecuteAsync(command, default);
+
+        var result = dc.Orders.SingleOrDefault(o => o.Name == NewOrderName);
+
+        Assert.NotNull(result);
+        Assert.Equal(expectedName, result.Name);
+        Assert.Equal(expectedStatus, result.Status);
     }
 }
 ```
