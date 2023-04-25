@@ -1,9 +1,10 @@
 ﻿using FastEndpoints;
 using FastArchitecture.Handlers.Orders.Queries;
+using FastArchitecture.Core.Api;
 
 namespace FastArchitecture.Api.Endpoints.Orders;
 
-public class GetOrdersEndpoint : EndpointWithoutRequest
+public class GetOrdersEndpoint : ApiEndpoint<GetOrders.Query, GetOrders.Response>
 {
     public override void Configure()
     {
@@ -12,10 +13,6 @@ public class GetOrdersEndpoint : EndpointWithoutRequest
         ResponseCache(60);
     }
 
-    public override async Task HandleAsync(CancellationToken ct)
-    {
-        var order = await new GetOrders.Query().ExecuteAsync(ct: ct);
-
-        await SendAsync(order, cancellation: ct);
-    }
+    public override async Task HandleAsync(GetOrders.Query request, CancellationToken ct)
+        => await SendAsync(await request.ExecuteAsync(ct));
 }

@@ -22,13 +22,13 @@ public static class ConfirmAllOrders
         }
     }
 
-    public sealed class Handler : CommandHandler<Command>
+    public sealed class Handler : Abstractions.CommandHandler<Command>
     {
         public Handler(IHandlerContext context) : base(context)
         {
         }
 
-        public override async Task ExecuteAsync(Command command, CancellationToken ct)
+        public override async Task<IHandlerResponse> ExecuteAsync(Command command, CancellationToken ct)
         {
             var orders = await DbContext
                    .Orders
@@ -37,6 +37,8 @@ public static class ConfirmAllOrders
             orders.ForEach(x => x.SetConfrimed());
 
             await DbContext.SaveChangesAsync(ct);
+
+            return Success();
         }
     }
 }

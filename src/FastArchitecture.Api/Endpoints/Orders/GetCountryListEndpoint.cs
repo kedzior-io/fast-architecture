@@ -4,15 +4,15 @@ using FastArchitecture.Core.Api;
 
 namespace FastArchitecture.Api.Endpoints.Orders;
 
-public class GetOrdersV1Endpoint : ApiEndpoint<GetOrders.Query, GetOrders.Response>
+public class GetCountryListEndpoint : ApiEndpoint<GetCountries.Query, GetCountries.Response>
 {
     public override void Configure()
     {
-        Get("orders.list"); // /v1/orders.list
+        Get("country.list");
         AllowAnonymous();
-        Version(1);
+        ResponseCache(60);
     }
 
-    public override async Task HandleAsync(GetOrders.Query request, CancellationToken ct)
+    public override async Task HandleAsync(GetCountries.Query request, CancellationToken ct)
         => await SendAsync(await request.ExecuteAsync(ct));
 }

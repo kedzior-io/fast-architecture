@@ -1,5 +1,4 @@
 ﻿using FastArchitecture.Handlers.Abstractions;
-using FastArchitecture.Handlers.Orders.Queries.Models;
 using FastEndpoints;
 using FluentValidation;
 using Serilog;
@@ -8,9 +7,29 @@ namespace FastArchitecture.Handlers.Orders.Commands;
 
 public static class CreateDraftOrder
 {
-    public sealed class Command : ICommand<OrderModel>
+    public sealed class Command : ICommand<IHandlerResponse<Response>>
     {
         public string Name { get; set; } = "";
+    }
+
+    // Handler response can sit within handler (here) or in "Models" and be shared, that's up to you!
+    public sealed class Response
+    {
+        public Guid Id { get; private set; }
+        public string Name { get; private set; }
+        public string CustomerName { get; private set; }
+
+        public Response(Domain.Order order)
+        {
+            Id = order.Id;
+            Name = order.Name;
+            CustomerName = order.Name;
+        }
+
+        public static Response Create(Domain.Order order)
+        {
+            return new Response(order);
+        }
     }
 
     public sealed class MyValidator : Validator<Command>
@@ -23,7 +42,7 @@ public static class CreateDraftOrder
         }
     }
 
-    public sealed class Handler : CommandHandler<Command>
+    public sealed class Handler : Abstractions.CommandHandler<Command, Response>
     {
         private readonly ILogger _logger;
 
@@ -32,7 +51,7 @@ public static class CreateDraftOrder
             _logger = context.Logger;
         }
 
-        public override async Task<OrderModel> ExecuteAsync(Command command, CancellationToken ct)
+        public override async Task<IHandlerResponse<Response>> ExecuteAsync(Command command, CancellationToken ct)
         {
             var order = Domain.Order.CreateDraft(command.Name);
 
@@ -41,7 +60,7 @@ public static class CreateDraftOrder
 
             _logger.Information("In need to log something here: {@order}", order);
 
-            return new OrderModel(order);
+            return Success(new Response(order));
         }
     }
 }

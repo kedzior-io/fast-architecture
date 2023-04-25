@@ -1,10 +1,12 @@
 ﻿using FastEndpoints;
 using FastArchitecture.Handlers.Orders.Queries;
 using Microsoft.AspNetCore.Mvc;
+using FastArchitecture.Core.Api;
+using FastArchitecture.Handlers.Orders.Queries.Models;
 
 namespace FastArchitecture.Api.Endpoints.Orders;
 
-public class GetOrderByNameEndpoint : Endpoint<GetOrderByName.Query>
+public class GetOrderByNameEndpoint : ApiEndpoint<GetOrderByName.Query, GetOrderByName.Response>
 {
     public override void Configure()
     {
@@ -13,8 +15,5 @@ public class GetOrderByNameEndpoint : Endpoint<GetOrderByName.Query>
     }
 
     public override async Task HandleAsync([FromQuery] GetOrderByName.Query request, CancellationToken ct)
-    {
-        var order = await request.ExecuteAsync(ct: ct);
-        await SendAsync(order, cancellation: ct);
-    }
+        => await SendAsync(await request.ExecuteAsync(ct));
 }

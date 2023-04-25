@@ -12,7 +12,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddFastEndpoints(dicoveryOptions =>
         {
-            dicoveryOptions.Assemblies = new[] { typeof(CommandHandler<>).Assembly };
+            dicoveryOptions.Assemblies = new[] { typeof(Handlers.Abstractions.CommandHandler<>).Assembly };
         });
 
         services.AddTransient<IHandlerContext, HandlerContext>();

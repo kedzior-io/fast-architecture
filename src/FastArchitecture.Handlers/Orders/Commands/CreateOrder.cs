@@ -21,7 +21,7 @@ public static class CreateOrder
         }
     }
 
-    public sealed class Handler : CommandHandler<Command>
+    public sealed class Handler : Abstractions.CommandHandler<Command>
     {
         public Handler(IHandlerContext context) : base(context)
         {

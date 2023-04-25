@@ -24,27 +24,24 @@ The motive behind it is to create a solution that is
 Just fire up with Visual Studio or Rider.
 For the simplicity the solution uses CosmosDB as persistence (using [emulator](https://aka.ms/cosmosdb-emulator) running on the localhost).
 
+Will most likely switch it to SQLite to avoid Cosmos DB installation.
+
 ## Usage
 
 1. Create an endpoint:
 
 ```csharp
-public class GetOrdersEndpoint : EndpointWithoutRequest
+public class GetOrdersEndpoint : ApiEndpoint<GetOrders.Query, GetOrders.Response>
 {
     public override void Configure()
     {
-        Get("orders.list");
+        Get("orders.list"); // orders.list
         AllowAnonymous();
         ResponseCache(60);
     }
 
-    public override async Task HandleAsync(CancellationToken ct)
-    {
-        var order = await new GetOrders.Query()
-            .ExecuteAsync(ct: ct);
-
-        await SendAsync(order, cancellation: ct);
-    }
+    public override async Task HandleAsync(GetOrders.Query request, CancellationToken ct)
+        => await SendAsync(await request.ExecuteAsync(ct));
 }
 ```
 
@@ -53,29 +50,17 @@ public class GetOrdersEndpoint : EndpointWithoutRequest
 ```csharp
 public static class GetOrders
 {
-    public sealed class Query : IQuery<Response>
+    public sealed class Query : IQuery<IHandlerResponse<Response>>
     {
     }
 
     public sealed class Response
     {
-        public IReadOnlyCollection<OrderModel> Orders { get; private set; }
+        public IReadOnlyCollection<OrderListModel> Orders { get; private set; }
 
         public Response(IReadOnlyCollection<Domain.Order> orders)
         {
-            Orders = orders.Select(x => new OrderModel(x)).ToList();
-        }
-    }
-
-    public sealed class OrderModel
-    {
-        public Guid Id { get; private set; }
-        public string Name { get; private set; }
-
-        public OrderModel(Domain.Order order)
-        {
-            Id = order.Id;
-            Name = order.Name;
+            Orders = orders.Select(OrderListModel.Create).ToList();
         }
     }
 
@@ -85,13 +70,13 @@ public static class GetOrders
         {
         }
 
-        public override async Task<Response> ExecuteAsync(Query query, CancellationToken ct)
+        public override async Task<IHandlerResponse<Response>> ExecuteAsync(Query query, CancellationToken ct)
         {
             var orders = await DbContext
                 .Orders
                 .ToListAsync(ct);
 
-            return new Response(orders);
+            return Success(new Response(orders));
         }
     }
 }
@@ -119,7 +104,7 @@ public static class CreateOrder
         }
     }
 
-    public sealed class Handler : CommandHandler<Command>
+    public sealed class Handler : Abstractions.CommandHandler<Command>
     {
         public Handler(IHandlerContext context) : base(context)
         {
@@ -128,7 +113,6 @@ public static class CreateOrder
         public override async Task ExecuteAsync(Command command, CancellationToken ct)
         {
             var order = Domain.Order.Create(command.Name);
-
             await DbContext.Orders.AddAsync(order, ct);
             await DbContext.SaveChangesAsync(ct);
         }
@@ -136,7 +120,7 @@ public static class CreateOrder
 }
 ```
 
-Want to fire up a command from `Azure Function`? 
+Want to fire up a command from `Azure Function`?
 
 ```csharp
 public class ConfirmAllOrdersFunction : FunctionBase<ConfirmAllOrdersFunction>
@@ -155,7 +139,8 @@ public class ConfirmAllOrdersFunction : FunctionBase<ConfirmAllOrdersFunction>
     }
 }
 ```
-Need to validate automatically and deserialize (useful when using [ServiceBusTrigger](https://learn.microsoft.com/en-us/azure/azure-functions/functions-bindings-service-bus-trigger?tabs=isolated-process%2Cextensionv5&pivots=programming-language-csharp#example))?  
+
+Need to validate automatically and deserialize (useful when using [ServiceBusTrigger](https://learn.microsoft.com/en-us/azure/azure-functions/functions-bindings-service-bus-trigger?tabs=isolated-process%2Cextensionv5&pivots=programming-language-csharp#example))?
 
 ```csharp
 public class OrderPaidFunction : FunctionBase<OrderPaidFunction>
@@ -164,7 +149,7 @@ public class OrderPaidFunction : FunctionBase<OrderPaidFunction>
     public OrderPaidFunction(ILogger logger, IValidator<CreateOrder.Command> validator) : base(logger, validator)
     {
     }
-    
+
     [Function(nameof(OrderPaidFunction))]
     public async Task Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequestData req)
     {
@@ -174,7 +159,6 @@ public class OrderPaidFunction : FunctionBase<OrderPaidFunction>
     }
 }
 ```
-
 
 ## TODO
 

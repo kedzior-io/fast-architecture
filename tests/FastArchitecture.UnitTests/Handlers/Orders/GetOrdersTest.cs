@@ -31,6 +31,6 @@ public class GetOrdersTests
 
         var response = await GetHandler(dbc).ExecuteAsync(query, default);
 
-        Assert.Equal(expected, response.Orders.Count);
+        Assert.Equal(expected, response.Payload.Orders.Count);
     }
 }

@@ -3,8 +3,8 @@ using FastArchitecture.Infrastructure.Persistence;
 
 namespace FastArchitecture.Handlers.Abstractions;
 
-public abstract class QueryHandler<TQuery, TResponse> : ICommandHandler<TQuery, TResponse>
-         where TQuery : IQuery<TResponse>
+public abstract class QueryHandler<TQuery, TResponse> : ICommandHandler<TQuery, IHandlerResponse<TResponse>>
+         where TQuery : IQuery<IHandlerResponse<TResponse>>
 {
     protected readonly IDbContext DbContext;
 
@@ -13,5 +13,15 @@ public abstract class QueryHandler<TQuery, TResponse> : ICommandHandler<TQuery, 
         DbContext = context.DbContext;
     }
 
-    public abstract Task<TResponse> ExecuteAsync(TQuery query, CancellationToken ct = default);
+    public abstract Task<IHandlerResponse<TResponse>> ExecuteAsync(TQuery query, CancellationToken ct = default);
+
+    public IHandlerResponse<TResponse> Success(TResponse response)
+    {
+        return HandlerResponse<TResponse>.Create(response);
+    }
+
+    public Task<IHandlerResponse<TResponse>> SuccessAsync(TResponse response)
+    {
+        return Task.FromResult(Success(response));
+    }
 }
