@@ -15,6 +15,7 @@ public static class ServiceCollectionExtensions
             dicoveryOptions.Assemblies = new[] { typeof(Handlers.Abstractions.CommandHandler<>).Assembly };
         });
 
+        services.AddScoped<IHandlerRequestContext, HandlerRequestContext>();
         services.AddTransient<IHandlerContext, HandlerContext>();
 
         services.AddDbContext<ApplicationDbContext>(options =>

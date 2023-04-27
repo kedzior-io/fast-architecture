@@ -7,10 +7,12 @@ public abstract class QueryHandler<TQuery, TResponse> : ICommandHandler<TQuery, 
          where TQuery : IQuery<IHandlerResponse<TResponse>>
 {
     protected readonly IDbContext DbContext;
+    protected readonly IHandlerRequestContext RequestContext;
 
     protected QueryHandler(IHandlerContext context)
     {
         DbContext = context.DbContext;
+        RequestContext = context.RequestContext;
     }
 
     public abstract Task<IHandlerResponse<TResponse>> ExecuteAsync(TQuery query, CancellationToken ct = default);

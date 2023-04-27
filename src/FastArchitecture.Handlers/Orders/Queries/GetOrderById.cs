@@ -40,6 +40,7 @@ public static class GetOrderByName
             var order = await DbContext
                    .Orders
                    .Where(x => x.Name == query.Name)
+                   .Where(x => x.UserId == RequestContext.UserId)
                    .SingleAsync(ct);
 
             return Success(new Response(order));

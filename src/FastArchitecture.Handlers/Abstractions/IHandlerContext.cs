@@ -7,4 +7,5 @@ public interface IHandlerContext
 {
     IDbContext DbContext { get; }
     ILogger Logger { get; }
+    IHandlerRequestContext RequestContext { get; }
 }
