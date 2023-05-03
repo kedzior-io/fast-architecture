@@ -1,5 +1,5 @@
-﻿using FastEndpoints;
-using FastArchitecture.Infrastructure.Persistence;
+﻿using FastArchitecture.Infrastructure.Persistence;
+using FastEndpoints;
 
 namespace FastArchitecture.Handlers.Abstractions;
 

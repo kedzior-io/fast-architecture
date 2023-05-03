@@ -1,5 +1,5 @@
-﻿using FastEndpoints;
-using FastArchitecture.Infrastructure.Persistence;
+﻿using FastArchitecture.Infrastructure.Persistence;
+using FastEndpoints;
 
 namespace FastArchitecture.Handlers.Abstractions;
 
@@ -32,6 +32,11 @@ public abstract class CommandHandler<TCommand> : ICommandHandler<TCommand> where
     public abstract Task ExecuteAsync(TCommand command, CancellationToken ct = default);
 
     public IHandlerResponse Success()
+    {
+        return HandlerResponse.CreateEmpty();
+    }
+
+    public IHandlerResponse Error(string error)
     {
         return HandlerResponse.CreateEmpty();
     }

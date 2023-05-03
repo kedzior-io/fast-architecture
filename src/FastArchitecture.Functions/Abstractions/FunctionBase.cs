@@ -63,12 +63,12 @@ public abstract class FunctionBase<T> where T : class
         }
     }
 
-    protected async Task ExecuteAsync<TCommand>(ICommand command, FunctionContext context) where TCommand: ICommand
+    protected async Task ExecuteAsync<TCommand>(ICommand command, FunctionContext context) where TCommand : ICommand
     {
         try
         {
             using (Init(context))
-            {         
+            {
                 var commandInstance = (TCommand)command;
 
                 await ThrowInvalid(command);

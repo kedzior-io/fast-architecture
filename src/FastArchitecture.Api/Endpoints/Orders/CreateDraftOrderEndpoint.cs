@@ -1,11 +1,9 @@
-﻿using FastEndpoints;
+﻿using FastArchitecture.Core.Api;
 using FastArchitecture.Handlers.Orders.Commands;
-
-using FastArchitecture.Core.Api;
 
 namespace FastArchitecture.Api.Endpoints.Orders;
 
-public class CreateDraftOrderEndpoint : ApiEndpoint<CreateDraftOrder.Command>
+public class CreateDraftOrderEndpoint : ApiEndpoint<CreateDraftOrder.Command, CreateDraftOrder.Response>
 {
     public override void Configure()
     {
@@ -14,6 +12,5 @@ public class CreateDraftOrderEndpoint : ApiEndpoint<CreateDraftOrder.Command>
         ResponseCache(60);
     }
 
-    public override async Task HandleAsync(CreateDraftOrder.Command command, CancellationToken ct)
-        => await SendAsync(await command.ExecuteAsync(ct));
+    public override async Task HandleAsync(CreateDraftOrder.Command command, CancellationToken ct) => await SendAsync(command, ct);
 }

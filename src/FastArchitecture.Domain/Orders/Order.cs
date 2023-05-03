@@ -45,4 +45,9 @@ public class Order : Entity, IAggregateRoot
     {
         return new Order(name, "created", "1");
     }
+
+    public static Order Create(string name, string userId)
+    {
+        return new Order(name, "created", userId);
+    }
 }

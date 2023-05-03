@@ -1,6 +1,5 @@
-﻿using FastEndpoints;
+﻿using FastArchitecture.Core.Api;
 using FastArchitecture.Handlers.Orders.Queries;
-using FastArchitecture.Core.Api;
 
 namespace FastArchitecture.Api.Endpoints.Orders;
 
@@ -13,6 +12,5 @@ public class GetOrdersV1Endpoint : ApiEndpoint<GetOrders.Query, GetOrders.Respon
         Version(1);
     }
 
-    public override async Task HandleAsync(GetOrders.Query request, CancellationToken ct)
-        => await SendAsync(await request.ExecuteAsync(ct));
+    public override async Task HandleAsync(GetOrders.Query query, CancellationToken ct) => await SendAsync(query, ct);
 }

@@ -1,5 +1,5 @@
-﻿using FastEndpoints;
-using FastArchitecture.Handlers.Abstractions;
+﻿using FastArchitecture.Handlers.Abstractions;
+using FastEndpoints;
 using FluentValidation;
 
 namespace FastArchitecture.Handlers.Commands;

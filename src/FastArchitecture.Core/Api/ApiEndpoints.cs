@@ -5,16 +5,30 @@ namespace FastArchitecture.Core.Api;
 
 public class ApiEndpoint<TRequest> : Endpoint<TRequest> where TRequest : notnull
 {
-    protected Task SendAsync(IHandlerResponse handlerResponse)
+    protected async Task SendAsync(ICommand command, CancellationToken cancellationToken)
     {
-        return SendNoContentAsync();
+        await command.ExecuteAsync(cancellationToken);
+        await SendNoContentAsync(cancellationToken);
+    }
+
+    protected async Task SendAsync<TResponse>(IQuery<TResponse> query, CancellationToken cancellationToken)
+    {
+        await query.ExecuteAsync(cancellationToken);
+        await SendNoContentAsync(cancellationToken);
     }
 }
 
 public class ApiEndpoint<TRequest, TResponse> : Endpoint<TRequest, TResponse> where TRequest : notnull
 {
-    protected Task SendAsync(IHandlerResponse<TResponse> handlerResponse)
+    protected async Task SendAsync(ICommand<IHandlerResponse<TResponse>> command, CancellationToken cancellationToken)
     {
-        return SendAsync(handlerResponse.Payload);
+        var handlerResponse = await command.ExecuteAsync(cancellationToken);
+        await SendAsync(handlerResponse.Payload, cancellation: cancellationToken);
+    }
+
+    protected async Task SendAsync(IQuery<IHandlerResponse<TResponse>> command, CancellationToken cancellationToken)
+    {
+        var handlerResponse = await command.ExecuteAsync(cancellationToken);
+        await SendAsync(handlerResponse.Payload, cancellation: cancellationToken);
     }
 }

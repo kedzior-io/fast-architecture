@@ -1,7 +1,7 @@
-using FastEndpoints.Swagger;
-using FastEndpoints;
-using Serilog;
 using FastArchitecture.Infrastructure.Extensions;
+using FastEndpoints;
+using FastEndpoints.Swagger;
+using Serilog;
 
 
 /*
