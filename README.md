@@ -28,9 +28,12 @@ This is a solution template for creating ASP.NET Core Web API that uses [FastEnd
 ## Installation
 
 Just fire up with Visual Studio or Rider.
-For the simplicity the solution uses CosmosDB as persistence (using [emulator](https://aka.ms/cosmosdb-emulator) running on the localhost).
 
-Will most likely switch it to SQLite to avoid Cosmos DB installation.
+The solution uses SQLite as database and it's created on the run time.
+
+When running use swagger to test API:
+
+`http://localhost:5054/swagger/index.html`
 
 ## Usage
 
@@ -215,11 +218,54 @@ public class CreateDraftOrderTests
 }
 ```
 
+Request context and error handling
+
+```csharp
+// ...
+
+    public sealed class Handler : QueryHandler<Query, Response>
+    {
+        public Handler(IHandlerContext context) : base(context)
+        {
+        }
+
+        public override async Task<IHandlerResponse<Response>> ExecuteAsync(Query query, CancellationToken ct)
+        {
+            var order = await DbContext
+                   .Orders
+                   .Where(x => x.Name == query.Name)
+                   .Where(x => x.UserId == RequestContext.UserId)
+                   .SingleOrDefaultAsync(ct);
+
+            if (order is null)
+            {
+                return Error("Order with name {0} not found.", query.Name);
+            }
+
+            return Success(new Response(order));
+        }
+    }
+
+```
+
+In above code `RequestContext` is a context for request related stuff for example `userId`, `languageCode` etc.
+
+Returning `return Error("Order with name {0} not found.", query.Name);` indicates the API to return error `400` with problem detail. It doesn't throw an exception!
+
+```json
+{
+  "statusCode": 400,
+  "message": "One or more errors occured!",
+  "errors": {
+    "GeneralErrors": ["Order with name 123 not found."]
+  }
+}
+```
+
 ## TODO
 
 There are few things to work out here and mainly:
 
-- ~~fire up validation on Azure Function execution~~
 - avoid creating `webAppBuilder` in Azure Function startup
 - removing `DumbEndpoint`- just see the comments in the code
 - add an example of integration test

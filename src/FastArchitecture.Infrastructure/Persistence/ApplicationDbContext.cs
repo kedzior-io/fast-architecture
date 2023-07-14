@@ -1,6 +1,5 @@
 ﻿using FastArchitecture.Domain;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.Runtime.CompilerServices;
 
 namespace FastArchitecture.Infrastructure.Persistence;
@@ -20,21 +19,8 @@ public class ApplicationDbContext : DbContext, IDbContext
     {
     }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
-        base.OnModelCreating(modelBuilder);
-    }
+    protected override void OnConfiguring(DbContextOptionsBuilder options) => options.UseSqlite($"Data Source=fast-architecture.db");
 
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default, [CallerMemberName] string? callerFunction = null, [CallerFilePath] string? callerFile = null) =>
         await base.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-
-}
-
-internal class OrderConfiguration : IEntityTypeConfiguration<Order>
-{
-    public void Configure(EntityTypeBuilder<Order> builder)
-    {
-        builder.SetDefaults(x => x.Id);
-    }
 }

@@ -1,8 +1,9 @@
 using FastArchitecture.Infrastructure.Extensions;
+using FastArchitecture.Infrastructure.Persistence;
 using FastEndpoints;
 using FastEndpoints.Swagger;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
-
 
 /*
  * TODO: exmaple of Authorization
@@ -35,10 +36,6 @@ builder.Services.AddDependencies();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-}
-
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.UseResponseCaching();
@@ -48,6 +45,20 @@ app.UseFastEndpoints(c =>
     c.Versioning.PrependToRoute = true;
 });
 
-
 app.UseSwaggerGen();
+
+if (app.Environment.IsDevelopment())
+{
+    /*
+     * Do not run this in production, not reall recommended
+     * https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/applying?tabs=dotnet-core-cli#apply-migrations-at-runtime
+     */
+
+    using (var scope = app.Services.CreateScope())
+    {
+        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        dbContext.Database.Migrate();
+    }
+}
+
 app.Run();

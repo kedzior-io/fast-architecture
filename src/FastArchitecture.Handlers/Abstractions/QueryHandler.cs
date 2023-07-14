@@ -26,4 +26,9 @@ public abstract class QueryHandler<TQuery, TResponse> : ICommandHandler<TQuery, 
     {
         return Task.FromResult(Success(response));
     }
+
+    public IHandlerResponse<TResponse> Error(string message, params object[] parameters)
+    {
+        return HandlerResponse<TResponse>.CreateError(message, parameters);
+    }
 }

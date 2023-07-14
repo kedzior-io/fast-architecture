@@ -23,12 +23,30 @@ public class ApiEndpoint<TRequest, TResponse> : Endpoint<TRequest, TResponse> wh
     protected async Task SendAsync(ICommand<IHandlerResponse<TResponse>> command, CancellationToken cancellationToken)
     {
         var handlerResponse = await command.ExecuteAsync(cancellationToken);
-        await SendAsync(handlerResponse.Payload, cancellation: cancellationToken);
+
+        if (handlerResponse.IsSuccess)
+        {
+            await SendAsync(handlerResponse.Payload, cancellation: cancellationToken);
+            return;
+        }
+
+        AddError(handlerResponse.Message);
+
+        await SendErrorsAsync(cancellation: cancellationToken);
     }
 
     protected async Task SendAsync(IQuery<IHandlerResponse<TResponse>> command, CancellationToken cancellationToken)
     {
         var handlerResponse = await command.ExecuteAsync(cancellationToken);
-        await SendAsync(handlerResponse.Payload, cancellation: cancellationToken);
+
+        if (handlerResponse.IsSuccess)
+        {
+            await SendAsync(handlerResponse.Payload, cancellation: cancellationToken);
+            return;
+        }
+
+        AddError(handlerResponse.Message);
+
+        await SendErrorsAsync(cancellation: cancellationToken);
     }
 }

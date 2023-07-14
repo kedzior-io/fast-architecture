@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -10,8 +10,13 @@
 	<PackageReference Include="FastEndpoints" Version="5.8.1" />
 	<PackageReference Include="Microsoft.Azure.Cosmos" Version="3.31.2" />
 	<PackageReference Include="Microsoft.EntityFrameworkCore.Cosmos" Version="7.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="5.0.0" />
+	<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.9" />
+	<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.9">
+	  <PrivateAssets>all</PrivateAssets>
+	  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	</PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>
