@@ -223,28 +223,28 @@ Request context and error handling
 ```csharp
 // ...
 
-    public sealed class Handler : QueryHandler<Query, Response>
+public sealed class Handler : QueryHandler<Query, Response>
+{
+    public Handler(IHandlerContext context) : base(context)
     {
-        public Handler(IHandlerContext context) : base(context)
-        {
-        }
-
-        public override async Task<IHandlerResponse<Response>> ExecuteAsync(Query query, CancellationToken ct)
-        {
-            var order = await DbContext
-                   .Orders
-                   .Where(x => x.Name == query.Name)
-                   .Where(x => x.UserId == RequestContext.UserId)
-                   .SingleOrDefaultAsync(ct);
-
-            if (order is null)
-            {
-                return Error("Order with name {0} not found.", query.Name);
-            }
-
-            return Success(new Response(order));
-        }
     }
+
+    public override async Task<IHandlerResponse<Response>> ExecuteAsync(Query query, CancellationToken ct)
+    {
+        var order = await DbContext
+                .Orders
+                .Where(x => x.Name == query.Name)
+                .Where(x => x.UserId == RequestContext.UserId)
+                .SingleOrDefaultAsync(ct);
+
+        if (order is null)
+        {
+            return Error("Order with name {0} not found.", query.Name);
+        }
+
+        return Success(new Response(order));
+    }
+}
 
 ```
 
