@@ -198,3 +198,5 @@ src/Bilbayt.Admin/wwwroot/firebase-messaging-sw.js.map
 src/Fiz.Api/Endpoints/Test/
 
 **/.DS_Store
+
+*.db
