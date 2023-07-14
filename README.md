@@ -10,26 +10,26 @@ This is a solution template for creating ASP.NET Core Web API that uses [FastEnd
 
 ## Goals
 
-- keep API layer as thin as possible
+- keep `API` layer as thin as possible
 - keep everything within handlers
 - have unit testable handlers
 
 ## Project structure
 
-- Api - thin API using [FastEndpoints](https://fast-endpoints.com) and [FastEndpoints Commands](https://fast-endpoints.com/docs/command-bus#_1-define-a-command)
-- Functions - thin Azure Functions (isolated process) using [FastEndpoints Commands](https://fast-endpoints.com/docs/command-bus#_1-define-a-command)
-- Handlers - class library where all command handlers live
-- Domain - where all domain entities and service lives
-- Infrastructure - persistence setup, sending emails etc
-- Core - common stuff, i.e shared services registration used in API and Functions
-- UnitTests - project containing unit tests for domain entities and handlers
-- IntegrationTests - still TODO
+- `Api` - thin API using [FastEndpoints](https://fast-endpoints.com) and [FastEndpoints Commands](https://fast-endpoints.com/docs/command-bus#_1-define-a-command)
+- `Functions` - thin Azure Functions (isolated process) using [FastEndpoints Commands](https://fast-endpoints.com/docs/command-bus#_1-define-a-command)
+- `Handlers` - class library where all command handlers live
+- `Domain` - where all domain entities and service lives
+- `Infrastructure` - persistence setup, sending emails etc
+- `Core` - common stuff, i.e shared services registration used in API and Functions
+- `UnitTests` - project containing unit tests for domain entities and handlers
+- `IntegrationTests` - still TODO
 
 ## Installation
 
-Just fire up with Visual Studio or Rider.
+Just fire up with `Visual Studio` or `JetBrains Rider`.
 
-The solution uses SQLite as database and it's created on the run time.
+The solution uses `SQLite` as database and it's created on the run time.
 
 When running use swagger to test API:
 
