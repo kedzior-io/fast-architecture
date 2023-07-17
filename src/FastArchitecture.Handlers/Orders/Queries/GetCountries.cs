@@ -31,16 +31,16 @@ public static class GetCountries
 
             var countries = await _cache.GetOrSetAsync(
                 cacheKey,
-                async _ => GetCountriesFromDb(),
+                factory: async _ => await GetCountriesFromDb(),
                 options => options.SetDuration(TimeSpan.FromMinutes(10)).SetSkipBackplaneNotifications(false),
                 ct) ?? new List<string>();
 
             return Success(new Response() { Countries = countries });
         }
-    }
 
-    private static List<string> GetCountriesFromDb()
-    {
-        return new List<string> { "Spain", "United Stated of America" };
+        private async Task<List<string>> GetCountriesFromDb()
+        {
+            return new List<string> { "Spain", "United Stated of America" };
+        }
     }
 }
