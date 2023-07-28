@@ -1,4 +1,5 @@
-﻿using FastArchitecture.Handlers.Abstractions;
+﻿using FastArchitecture.Domain;
+using FastArchitecture.Handlers.Abstractions;
 using FastEndpoints;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;

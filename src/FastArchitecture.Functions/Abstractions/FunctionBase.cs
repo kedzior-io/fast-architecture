@@ -1,5 +1,6 @@
 ﻿using FastArchitecture.Functions.Configuration;
 using FastArchitecture.Functions.Logging;
+
 using FastEndpoints;
 using FluentValidation;
 using Microsoft.Azure.Functions.Worker;
@@ -44,11 +45,11 @@ public abstract class FunctionBase<T> where T : class
         Log = new FunctionLog(logger, _functionName);
         _validator = validator;
     }
+
     protected async Task ExecuteAsync<TCommand>(string deserializedCommand, FunctionContext context) where TCommand : ICommand
     {
         try
         {
-
             using (Init(context, deserializedCommand, out TCommand command))
             {
                 await ThrowInvalid(command);
@@ -90,7 +91,7 @@ public abstract class FunctionBase<T> where T : class
             return;
         }
 
-        var validationContext = new ValidationContext<ICommand>(command);
+        var validationContext = new FluentValidation.ValidationContext<ICommand>(command);
         var validationResult = await _validator.ValidateAsync(validationContext);
 
         if (!validationResult.IsValid)

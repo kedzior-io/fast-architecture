@@ -16,14 +16,14 @@ public static class CreateOrder
         public MyValidator()
         {
             RuleFor(x => x.Name)
-                .MinimumLength(5)
+                .MinimumLength(1)
                 .WithMessage("Order name is too short!");
         }
     }
 
     public sealed class Handler : Abstractions.CommandHandler<Command>
     {
-        public Handler(IHandlerContext context) : base(context)
+         public Handler(IHandlerContext context) : base(context)
         {
         }
 

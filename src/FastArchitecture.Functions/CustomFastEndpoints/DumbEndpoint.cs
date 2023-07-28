@@ -1,6 +1,6 @@
 ﻿using FastEndpoints;
 
-namespace FastArchitecture.Functions.FastEndpoints;
+namespace FastArchitecture.Functions.CustomFastEndpoints;
 
 /// <summary>
 /// That's a workaround gor having commands triggered from azure functions using FastEndpoints

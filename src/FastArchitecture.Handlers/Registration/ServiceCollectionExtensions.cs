@@ -7,19 +7,36 @@ namespace FastArchitecture.Handlers.Registration;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddDependencies(this IServiceCollection services/*, IConfiguration configuration, IHostEnvironment environment*/)
+    public static IServiceCollection AddApiDependencies(this IServiceCollection services)
+    {
+        services.AddScoped<IHandlerContext, HandlerContext>();
+
+        services.AddCommonDependencies();
+
+        return services;
+    }
+
+    public static IServiceCollection AddAzureFunctionsDependencies(this IServiceCollection services)
+    {
+        services.AddScoped<IHandlerContext, FunctionHandlerContext>();
+        services.AddDbContextFactory<ApplicationDbContext>();
+
+        services.AddCommonDependencies();
+
+        return services;
+    }
+
+    private static IServiceCollection AddCommonDependencies(this IServiceCollection services)
     {
         services.AddFastEndpoints(dicoveryOptions =>
         {
-            dicoveryOptions.Assemblies = new[] { typeof(Handlers.Abstractions.CommandHandler<>).Assembly };
+            dicoveryOptions.Assemblies = new[] { typeof(Abstractions.CommandHandler<>).Assembly };
         });
 
         services.AddScoped<IHandlerRequestContext, HandlerRequestContext>();
-        services.AddTransient<IHandlerContext, HandlerContext>();
-
         services.AddDbContext<ApplicationDbContext>();
+        services.AddScoped<IDbContext, ApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
 
-        services.AddTransient<IDbContext, ApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
         return services;
     }
 }

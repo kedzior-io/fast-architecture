@@ -19,20 +19,28 @@ builder.Host.UseSerilog((hostContext, services, configuration) =>
 });
 
 builder.Services.AddResponseCaching();
-builder.Services.AddSwaggerDoc(s =>
+
+builder.Services.SwaggerDocument(o =>
     {
-        s.DocumentName = "Initial Release";
-        s.Title = "FastArchitecture.Api";
-        s.Version = "v1.0";
+        o.DocumentSettings = s =>
+        {
+            s.DocumentName = "Initial Release";
+            s.Title = "FastArchitecture.Api";
+            s.Version = "v1.0";
+        };
     })
-    .AddSwaggerDoc(maxEndpointVersion: 1, settings: s =>
+    .SwaggerDocument(o =>
     {
-        s.DocumentName = "Release 1.0";
-        s.Title = "FastArchitecture.Api";
-        s.Version = "v1.0";
+        o.MaxEndpointVersion = 1;
+        o.DocumentSettings = s =>
+        {
+            s.DocumentName = "Release 1.0";
+            s.Title = "FastArchitecture.Api";
+            s.Version = "v1.0";
+        };
     });
 
-builder.Services.AddDependencies();
+builder.Services.AddApiDependencies();
 
 var app = builder.Build();
 
