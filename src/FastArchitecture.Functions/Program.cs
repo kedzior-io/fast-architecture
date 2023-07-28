@@ -1,6 +1,5 @@
 using FastArchitecture.Handlers.Abstractions;
-using FastArchitecture.Infrastructure.Extensions;
-
+using FastArchitecture.Handlers.Registration;
 using FastEndpoints;
 using FluentValidation;
 using Microsoft.AspNetCore.Builder;
@@ -28,7 +27,6 @@ var host = new HostBuilder()
         s.AddSingleton<ILogger>(_ => logger);
 
         s.AddValidatorsFromAssemblyContaining<HandlerContext>();
-
 
         var webAppBuilder = WebApplication.CreateBuilder();
         webAppBuilder.Services.AddSingleton<ILogger>(_ => logger);

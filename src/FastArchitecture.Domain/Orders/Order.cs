@@ -33,7 +33,7 @@ public class Order : Entity, IAggregateRoot
 
     public void SetConfrimed()
     {
-        Status = "confrimed";
+        Status = "confirmed";
     }
 
     public static Order CreateDraft(string name)

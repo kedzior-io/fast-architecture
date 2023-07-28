@@ -1,5 +1,4 @@
-﻿using FastArchitecture.Core.Api;
-using FastArchitecture.Handlers.Orders.Queries;
+﻿using FastArchitecture.Handlers.Orders.Queries;
 
 namespace FastArchitecture.Api.Endpoints.Orders;
 

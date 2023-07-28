@@ -3,7 +3,7 @@ using FastArchitecture.Infrastructure.Persistence;
 using FastEndpoints;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FastArchitecture.Infrastructure.Extensions;
+namespace FastArchitecture.Handlers.Registration;
 
 public static class ServiceCollectionExtensions
 {

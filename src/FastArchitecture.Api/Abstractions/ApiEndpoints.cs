@@ -1,7 +1,7 @@
 ﻿using FastArchitecture.Handlers.Abstractions;
 using FastEndpoints;
 
-namespace FastArchitecture.Core.Api;
+namespace FastArchitecture.Api;
 
 public class ApiEndpoint<TRequest> : Endpoint<TRequest> where TRequest : notnull
 {

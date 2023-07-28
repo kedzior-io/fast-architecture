@@ -1,4 +1,4 @@
-using FastArchitecture.Infrastructure.Extensions;
+using FastArchitecture.Handlers.Registration;
 using FastArchitecture.Infrastructure.Persistence;
 using FastEndpoints;
 using FastEndpoints.Swagger;
