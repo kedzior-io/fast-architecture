@@ -8,7 +8,6 @@ public class CreateDraftOrderEndpoint : ApiEndpoint<CreateDraftOrder.Command, Cr
     {
         Post("orders.create");
         AllowAnonymous();
-        ResponseCache(60);
     }
 
     public override async Task HandleAsync(CreateDraftOrder.Command command, CancellationToken ct) => await SendAsync(command, ct);

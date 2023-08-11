@@ -1,10 +1,10 @@
 using FastArchitecture.Functions.Abstractions;
-using FastArchitecture.Handlers.Commands;
+using FastArchitecture.Handlers.Orders.Commands;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Serilog;
 
-namespace FastArchitecture.Functions.ServiceBusTriggers;
+namespace FastArchitecture.Functions.HttpTriggers;
 
 /// <summary>
 /// An example of typical function triggered by a Azure Logic App

@@ -2,21 +2,25 @@
 using FastEndpoints;
 
 namespace FastArchitecture.Api;
-
-public class ApiEndpoint<TRequest> : Endpoint<TRequest> where TRequest : notnull
+public class ApiEndpoint<TRequest> : Endpoint<TRequest> where TRequest : ICommand
 {
     protected async Task SendAsync(ICommand command, CancellationToken cancellationToken)
     {
         await command.ExecuteAsync(cancellationToken);
         await SendNoContentAsync(cancellationToken);
     }
+}
 
-    protected async Task SendAsync<TResponse>(IQuery<TResponse> query, CancellationToken cancellationToken)
+public class ApiEndpointWithoutRequest<TRequest> : EndpointWithoutRequest where TRequest: ICommand, new()
+{
+    protected async Task SendAsync(CancellationToken cancellationToken)
     {
-        await query.ExecuteAsync(cancellationToken);
+        var command = new TRequest();
+        await command.ExecuteAsync(cancellationToken);
         await SendNoContentAsync(cancellationToken);
     }
 }
+
 
 public class ApiEndpoint<TRequest, TResponse> : Endpoint<TRequest, TResponse> where TRequest : notnull
 {

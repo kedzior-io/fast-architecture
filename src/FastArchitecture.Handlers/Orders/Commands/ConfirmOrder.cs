@@ -4,9 +4,9 @@ using FastEndpoints;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
-namespace FastArchitecture.Handlers.Commands;
+namespace FastArchitecture.Handlers.Orders.Commands;
 
-public static class ConfirmAllOrders
+public static class ConfirmOrder
 {
     public sealed class Command : ICommand
     {
@@ -31,11 +31,12 @@ public static class ConfirmAllOrders
 
         public override async Task<IHandlerResponse> ExecuteAsync(Command command, CancellationToken ct)
         {
-            var orders = await DbContext
+            var order = await DbContext
                    .Orders
-                   .ToListAsync(ct);
+                   .Where(x=> x.Name == command.Name)
+                   .SingleAsync(ct);
 
-            orders.ForEach(x => x.SetConfrimed());
+            order.SetConfrimed();
 
             await DbContext.SaveChangesAsync(ct);
 
