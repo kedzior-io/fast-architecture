@@ -32,7 +32,7 @@ public static class CreateCountry
             var countries = await _cache.GetOrSetAsync(
                   CacheKeys.Countries,
                   factory: async _ => await GetCountriesFromDb(),
-                  options => options.SetDuration(TimeSpan.Zero).SetSkipBackplaneNotifications(false),
+                  options => options.SetDuration(TimeSpan.MaxValue).SetSkipBackplaneNotifications(false),
                   ct) ?? new List<string>();
 
             countries.Add(command.Name);

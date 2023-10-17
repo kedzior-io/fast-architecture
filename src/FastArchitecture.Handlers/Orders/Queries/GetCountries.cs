@@ -31,7 +31,7 @@ public static class GetCountries
             var countries = await _cache.GetOrSetAsync(
                 CacheKeys.Countries,
                 factory: async _ => await GetCountriesFromDb(),
-                options => options.SetDuration(TimeSpan.Zero).SetSkipBackplaneNotifications(false),
+                options => options.SetDuration(TimeSpan.MaxValue).SetSkipBackplaneNotifications(false),
                 ct) ?? new List<string>();
 
             return Success(new Response() { Countries = countries });
