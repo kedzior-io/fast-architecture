@@ -29,15 +29,11 @@ public static class CreateCountry
         {
             _cache.DefaultEntryOptions.SkipBackplaneNotifications = false;
 
-            var countries = await _cache.GetOrSetAsync(
-                  CacheKeys.Countries,
-                  factory: async _ => await GetCountriesFromDb(),
-                  options => options.SetDuration(TimeSpan.MaxValue).SetSkipBackplaneNotifications(false),
-                  ct) ?? new List<string>();
+            var countries = await GetCountriesFromDb();
 
             countries.Add(command.Name);
 
-            await _cache.SetAsync(CacheKeys.Countries, countries, token: ct);
+            await _cache.SetAsync(CacheKeys.Countries, countries, options => options.SetDuration(TimeSpan.MaxValue).SetSkipBackplaneNotifications(false), token: ct);
 
             return Success();
         }
