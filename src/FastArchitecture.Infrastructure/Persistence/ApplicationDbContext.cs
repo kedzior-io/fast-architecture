@@ -1,4 +1,5 @@
-﻿using FastArchitecture.Domain;
+﻿using FastArchitecture.Core.Constants;
+using FastArchitecture.Domain;
 using Microsoft.EntityFrameworkCore;
 using System.Runtime.CompilerServices;
 
@@ -19,7 +20,7 @@ public class ApplicationDbContext : DbContext, IDbContext
     {
     }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder options) => options.UseSqlite($"Data Source=fast-architecture.db");
+    protected override void OnConfiguring(DbContextOptionsBuilder options) => options.UseSqlite(ConnectionStrings.Sqlite);
 
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default, [CallerMemberName] string? callerFunction = null, [CallerFilePath] string? callerFile = null) =>
         await base.SaveChangesAsync(cancellationToken).ConfigureAwait(false);

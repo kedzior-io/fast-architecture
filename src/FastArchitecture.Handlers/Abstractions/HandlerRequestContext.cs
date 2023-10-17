@@ -25,13 +25,11 @@ public sealed class HandlerRequestContext : IHandlerRequestContext
 
     public HandlerRequestContext(IHttpContextAccessor accessor)
     {
-        if (accessor.HttpContext is null)
+        if (accessor.HttpContext is not null)
         {
-            throw new NullReferenceException("HttpContext is null");
+            UserId = accessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            Email = accessor.HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
         }
-
-        UserId = accessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        Email = accessor.HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
 
         // TODO: add RequestCulture
         // LanguageCode = accessor.HttpContext.Features.Get<IRequestCultureFeature>()!.RequestCulture.Culture.TwoLetterISOLanguageName;

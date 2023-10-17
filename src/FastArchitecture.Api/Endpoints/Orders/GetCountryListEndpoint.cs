@@ -1,5 +1,4 @@
-﻿using FastArchitecture.Core.Api;
-using FastArchitecture.Handlers.Orders.Queries;
+﻿using FastArchitecture.Handlers.Orders.Queries;
 
 namespace FastArchitecture.Api.Endpoints.Orders;
 
@@ -9,7 +8,6 @@ public class GetCountryListEndpoint : ApiEndpoint<GetCountries.Query, GetCountri
     {
         Get("country.list");
         AllowAnonymous();
-        ResponseCache(60);
     }
 
     public override async Task HandleAsync(GetCountries.Query query, CancellationToken ct) => await SendAsync(query, ct);

@@ -16,9 +16,4 @@
     <PackageReference Include="ZiggyCreatures.FusionCache.Backplane.StackExchangeRedis" Version="0.22.0" />
     <PackageReference Include="ZiggyCreatures.FusionCache.Serialization.SystemTextJson" Version="0.16.0" />
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\FastArchitecture.Handlers\FastArchitecture.Handlers.csproj" />
-  </ItemGroup>
-
 </Project>

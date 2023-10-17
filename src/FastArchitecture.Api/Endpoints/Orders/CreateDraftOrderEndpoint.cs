@@ -1,5 +1,4 @@
-﻿using FastArchitecture.Core.Api;
-using FastArchitecture.Handlers.Orders.Commands;
+﻿using FastArchitecture.Handlers.Orders.Commands;
 
 namespace FastArchitecture.Api.Endpoints.Orders;
 
@@ -9,7 +8,6 @@ public class CreateDraftOrderEndpoint : ApiEndpoint<CreateDraftOrder.Command, Cr
     {
         Post("orders.create");
         AllowAnonymous();
-        ResponseCache(60);
     }
 
     public override async Task HandleAsync(CreateDraftOrder.Command command, CancellationToken ct) => await SendAsync(command, ct);

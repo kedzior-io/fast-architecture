@@ -1,6 +1,6 @@
 using FastArchitecture.Handlers.Abstractions;
-using FastArchitecture.Infrastructure.Extensions;
-
+using FastArchitecture.Handlers.Registration;
+using FastArchitecture.Infrastructure.Persistence;
 using FastEndpoints;
 using FluentValidation;
 using Microsoft.AspNetCore.Builder;
@@ -25,17 +25,17 @@ var host = new HostBuilder()
             .Enrich.WithProperty("SourceLogger", "Serilog");
 
         var logger = loggerConfiguration.CreateLogger();
-        s.AddSingleton<ILogger>(_ => logger);
 
+        s.AddSingleton<ILogger>(_ => logger);
         s.AddValidatorsFromAssemblyContaining<HandlerContext>();
 
-
         var webAppBuilder = WebApplication.CreateBuilder();
-        webAppBuilder.Services.AddSingleton<ILogger>(_ => logger);
 
-        webAppBuilder.Services.AddDependencies();
+        webAppBuilder.Services.AddSingleton<ILogger>(_ => logger);
+        webAppBuilder.Services.AddAzureFunctionsDependencies();
 
         var app = webAppBuilder.Build();
+
         app.UseFastEndpoints();
     })
     .Build();

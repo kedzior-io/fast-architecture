@@ -1,4 +1,5 @@
-﻿using FastArchitecture.Handlers.Abstractions;
+﻿using FastArchitecture.Core.Constants;
+using FastArchitecture.Handlers.Abstractions;
 using ZiggyCreatures.Caching.Fusion;
 
 namespace FastArchitecture.Handlers.Orders.Queries;
@@ -25,22 +26,20 @@ public static class GetCountries
 
         public override async Task<IHandlerResponse<Response>> ExecuteAsync(Query query, CancellationToken ct)
         {
-            var cacheKey = "production:countries";
-
             _cache.DefaultEntryOptions.SkipBackplaneNotifications = true;
 
             var countries = await _cache.GetOrSetAsync(
-                cacheKey,
+                CacheKeys.Countries,
                 factory: async _ => await GetCountriesFromDb(),
-                options => options.SetDuration(TimeSpan.FromMinutes(10)).SetSkipBackplaneNotifications(false),
+                options => options.SetDuration(TimeSpan.Zero).SetSkipBackplaneNotifications(false),
                 ct) ?? new List<string>();
 
             return Success(new Response() { Countries = countries });
         }
 
-        private async Task<List<string>> GetCountriesFromDb()
+        private static async Task<List<string>> GetCountriesFromDb()
         {
-            return new List<string> { "Spain", "United Stated of America" };
+            return await Task.FromResult(new List<string> { "Spain", "United Stated of America" });
         }
     }
 }
