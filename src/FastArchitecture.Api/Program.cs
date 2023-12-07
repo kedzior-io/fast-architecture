@@ -1,9 +1,7 @@
-using FastArchitecture.Handlers.Registration;
-using FastArchitecture.Infrastructure.Persistence;
-using FastEndpoints;
-using FastEndpoints.Swagger;
-using Microsoft.EntityFrameworkCore;
+using FastArchitecture.Api;
+using Oakton;
 using Serilog;
+using Wolverine;
 
 /*
  * TODO: exmaple of Authorization
@@ -14,59 +12,38 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog((hostContext, services, configuration) =>
 {
-    configuration
-        .WriteTo.Console();
+    configuration.WriteTo.Console();
 });
 
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddResponseCaching();
+builder.Services.AddSwaggerGen();
+builder.Host.UseWolverine();
+builder.Services.AddAuthorization();
 
-builder.Services.SwaggerDocument(o =>
-    {
-        o.DocumentSettings = s =>
-        {
-            s.DocumentName = "Initial Release";
-            s.Title = "FastArchitecture.Api";
-            s.Version = "v1.0";
-        };
-    })
-    .SwaggerDocument(o =>
-    {
-        o.MaxEndpointVersion = 1;
-        o.DocumentSettings = s =>
-        {
-            s.DocumentName = "Release 1.0";
-            s.Title = "FastArchitecture.Api";
-            s.Version = "v1.0";
-        };
-    });
-
-builder.Services.AddApiDependencies();
+//builder.Services.AddApiDependencies();
 
 var app = builder.Build();
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.UseResponseCaching();
-app.UseFastEndpoints(c =>
-{
-    c.Versioning.Prefix = "v";
-    c.Versioning.PrependToRoute = true;
-});
-
-app.UseSwaggerGen();
 
 if (app.Environment.IsDevelopment())
 {
+    app.UseSwagger();
+    app.UseSwaggerUI();
+
     /*
-     * Do not run this in production, not reall recommended
+     * Do not run this in production, not really recommended
      * https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/applying?tabs=dotnet-core-cli#apply-migrations-at-runtime
      */
 
-    using (var scope = app.Services.CreateScope())
-    {
-        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        dbContext.Database.Migrate();
-    }
+    //using var scope = app.Services.CreateScope();
+    //var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    //dbContext.Database.Migrate();
 }
 
+app.AddEndpoints();
 app.Run();
+//return await app.RunOaktonCommands(args);

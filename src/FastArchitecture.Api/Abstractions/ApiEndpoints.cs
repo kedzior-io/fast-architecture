@@ -2,6 +2,7 @@
 using FastEndpoints;
 
 namespace FastArchitecture.Api;
+
 public class ApiEndpoint<TRequest> : Endpoint<TRequest> where TRequest : ICommand
 {
     protected async Task SendAsync(ICommand command, CancellationToken cancellationToken)
@@ -11,7 +12,7 @@ public class ApiEndpoint<TRequest> : Endpoint<TRequest> where TRequest : IComman
     }
 }
 
-public class ApiEndpointWithoutRequest<TRequest> : EndpointWithoutRequest where TRequest: ICommand, new()
+public class ApiEndpointWithoutRequest<TRequest> : EndpointWithoutRequest where TRequest : ICommand, new()
 {
     protected async Task SendAsync(CancellationToken cancellationToken)
     {
@@ -20,7 +21,6 @@ public class ApiEndpointWithoutRequest<TRequest> : EndpointWithoutRequest where 
         await SendNoContentAsync(cancellationToken);
     }
 }
-
 
 public class ApiEndpoint<TRequest, TResponse> : Endpoint<TRequest, TResponse> where TRequest : notnull
 {
