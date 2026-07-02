@@ -1,7 +1,7 @@
 > :warning:
 > I will no longer maintain this because I came out with something better 👇 👇 👇
 
-# Please check [Astro Architecture](https://github.com/kedzior-io/astro-architecture)
+# Please check [Fat Slice Architecture](https://github.com/kedzior-io/fat-slice-architecture)
 
 I completely removed the dependency on FastEndpoints and focused on Minimal API
 
